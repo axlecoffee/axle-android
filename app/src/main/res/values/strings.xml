@@ -1,0 +1,32 @@
+<resources>
+    <string name="app_name">Axle Weather</string>
+    <string name="widget_description">Display current weather from Axle API</string>
+    
+    <!-- Widget Configuration -->
+    <string name="widget_config_title">Configure Weather Widget</string>
+    <string name="widget_config_subtitle">Customize your weather widget appearance</string>
+    <string name="preview">Preview</string>
+    <string name="configuration">Configuration</string>
+    <string name="temperature_text_size">Temperature Text Size</string>
+    <string name="temperature_opacity">Temperature Opacity</string>
+    <string name="feels_like_text_size">Feels Like Text Size</string>
+    <string name="feels_like_opacity">Feels Like Opacity</string>
+    <string name="condition_text_size">Condition Text Size</string>
+    <string name="condition_opacity">Condition Opacity</string>
+    <string name="text_color">Text Color</string>
+    <string name="custom_color_hex">Custom Color (Hex)</string>
+    <string name="hex_color_format">Format: #RRGGBB or #AARRGGBB</string>
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
+    
+    <!-- Weather Widget -->
+    <string name="widget_loading">Loading...</string>
+    <string name="widget_error">Error</string>
+    <string name="widget_no_data">No Data</string>
+    
+    <!-- Main Activity -->
+    <string name="refresh">Refresh</string>
+    <string name="error_loading">Error loading weather data</string>
+    <string name="temperature_format">%d°</string>
+    <string name="hourly_forecast">Hourly Forecast</string>
+</resources>

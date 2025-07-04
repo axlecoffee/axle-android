@@ -1,0 +1,13 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Build and Install Debug APK",
+      "type": "shell",
+      "command": "cd e:\\coffee\\axle-android && .\\gradlew assembleDebug && adb install -r app\\build\\outputs\\apk\\debug\\app-debug.apk",
+      "group": "build",
+      "isBackground": false,
+      "problemMatcher": ["$gradle"]
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<data-extraction-rules>
+    <!-- 
+    Add any custom data extraction rules here.
+    For more information, see https://developer.android.com/about/versions/12/backup-restore
+    -->
+</data-extraction-rules>

@@ -1,0 +1,29 @@
+
+07-03 22:50:38.717 28166 28262 D WeatherGlanceWidget: Getting widget ID for glanceId: AppWidgetId(appWidgetId=23)
+07-03 22:50:38.722 28166 28262 D WeatherGlanceWidget: Loading configuration for widget ID: 23
+07-03 22:50:38.723 28166 28262 D WeatherGlanceWidget: Loaded configuration for widget 23:
+07-03 22:53:01.712 28166 28259 D WeatherGlanceWidget: Getting widget ID for glanceId: AppWidgetId(appWidgetId=23)
+07-03 22:53:01.713 28166 28259 D WeatherGlanceWidget: Found mapped widget ID: 23 for GlanceId: AppWidgetId(appWidgetId=23)
+07-03 22:53:01.714 28166 28259 D WeatherGlanceWidget: Loading configuration for widget ID: 23
+07-03 22:53:01.714 28166 28259 D WeatherGlanceWidget: Loaded configuration for widget 23:
+07-03 22:56:54.160 28166 28259 D WeatherGlanceWidget: Getting widget ID for glanceId: AppWidgetId(appWidgetId=23)
+07-03 22:56:54.161 28166 28259 D WeatherGlanceWidget: Found mapped widget ID: 23 for GlanceId: AppWidgetId(appWidgetId=23)
+07-03 22:56:54.162 28166 28259 D WeatherGlanceWidget: Loading configuration for widget ID: 23
+07-03 22:56:54.162 28166 28259 D WeatherGlanceWidget: Loaded configuration for widget 23:
+07-03 23:01:27.938 28166 28319 D WeatherGlanceWidget: Getting widget ID for glanceId: AppWidgetId(appWidgetId=23)
+07-03 23:01:27.938 28166 28319 D WeatherGlanceWidget: Found mapped widget ID: 23 for GlanceId: AppWidgetId(appWidgetId=23)
+07-03 23:01:27.940 28166 28319 D WeatherGlanceWidget: Loading configuration for widget ID: 23
+07-03 23:01:27.940 28166 28319 D WeatherGlanceWidget: Loaded configuration for widget 23:
+07-03 23:03:45.548 28166 28262 D WeatherGlanceWidget: Getting widget ID for glanceId: AppWidgetId(appWidgetId=23)
+07-03 23:03:45.548 28166 28262 D WeatherGlanceWidget: Found mapped widget ID: 23 for GlanceId: AppWidgetId(appWidgetId=23)
+07-03 23:03:45.550 28166 28262 D WeatherGlanceWidget: Loading configuration for widget ID: 23
+07-03 23:03:45.550 28166 28262 D WeatherGlanceWidget: Loaded configuration for widget 23:
+07-03 23:05:27.797 28166 28258 D WeatherGlanceWidget: Getting widget ID for glanceId: AppWidgetId(appWidgetId=23)
+07-03 23:05:27.798 28166 28258 D WeatherGlanceWidget: Found mapped widget ID: 23 for GlanceId: AppWidgetId(appWidgetId=23)
+07-03 23:05:27.799 28166 28258 D WeatherGlanceWidget: Loading configuration for widget ID: 23
+07-03 23:05:27.799 28166 28258 D WeatherGlanceWidget: Loaded configuration for widget 23:
+07-03 23:06:19.405 28166 28262 D WeatherGlanceWidget: Getting widget ID for glanceId: AppWidgetId(appWidgetId=23)
+07-03 23:06:19.405 28166 28262 D WeatherGlanceWidget: Found mapped widget ID: 23 for GlanceId: AppWidgetId(appWidgetId=23)
+07-03 23:06:19.407 28166 28262 D WeatherGlanceWidget: Loading configuration for widget ID: 23
+07-03 23:06:19.408 28166 28262 D WeatherGlanceWidget: Loaded configuration for widget 23:
+
