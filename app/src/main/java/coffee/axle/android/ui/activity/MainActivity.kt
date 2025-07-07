@@ -9,7 +9,7 @@ import coffee.axle.android.databinding.ActivityMainBinding
 import coffee.axle.android.ui.adapter.HourlyForecastAdapter
 import coffee.axle.android.ui.viewmodel.WeatherViewModel
 import coffee.axle.android.widget.WeatherAppWidget
-import coffee.axle.android.widget.WeatherDataCache
+import coffee.axle.android.widget.WeatherCacheManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -100,13 +100,10 @@ class MainActivity : AppCompatActivity() {
 	private fun refreshWeatherCache() {
 		mainScope.launch {
 			try {
-				// Force refresh weather data in cache
-				WeatherDataCache.refreshWeatherData(this@MainActivity)
-				
-				// Update all widgets with fresh data
+				val cacheManager = WeatherCacheManager.getInstance(this@MainActivity)
+				cacheManager.refreshWeatherData()
 				WeatherAppWidget.updateAllWidgets(this@MainActivity)
 			} catch (e: Exception) {
-				// Silent failure - the main app will still work normally
 				android.util.Log.e("MainActivity", "Failed to refresh weather cache", e)
 			}
 		}

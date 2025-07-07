@@ -17,17 +17,10 @@ class BootCompletedReceiver : BroadcastReceiver() {
 			Intent.ACTION_BOOT_COMPLETED,
 			Intent.ACTION_MY_PACKAGE_REPLACED,
 			Intent.ACTION_PACKAGE_REPLACED -> {
-				Log.d("BootCompletedReceiver", "Device boot completed or app updated")
-				
 				try {
-					// Reinitialize cache manager
 					val cacheManager = WeatherCacheManager.getInstance(context)
 					cacheManager.initialize()
-					
-					// Update all widgets
 					WeatherAppWidget.updateAllWidgets(context)
-					
-					Log.d("BootCompletedReceiver", "Cache manager and widgets reinitialized")
 				} catch (e: Exception) {
 					Log.e("BootCompletedReceiver", "Error reinitializing after boot", e)
 				}

@@ -17,8 +17,8 @@ import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
 
 /**
- * Production-ready weather cache manager following repository pattern
- * Handles automatic cache refresh, app restart scenarios, and background updates
+ * Production-ready weather cache manager following repository pattern.
+ * Handles automatic cache refresh, app restart scenarios, and background updates.
  */
 class WeatherCacheManager private constructor(private val context: Context) {
 	
@@ -53,20 +53,13 @@ class WeatherCacheManager private constructor(private val context: Context) {
 	 * Initialize cache manager - call this on app startup
 	 */
 	fun initialize() {
-		Log.d("WeatherCacheManager", "Initializing cache manager")
-		
-		// Check if cache version is current
 		val currentVersion = prefs.getInt(KEY_CACHE_VERSION, 0)
 		if (currentVersion < CACHE_VERSION) {
-			Log.d("WeatherCacheManager", "Cache version outdated, clearing cache")
 			clearCache()
 			prefs.edit().putInt(KEY_CACHE_VERSION, CACHE_VERSION).apply()
 		}
 		
-		// Start background refresh scheduling
 		scheduleBackgroundRefresh()
-		
-		Log.d("WeatherCacheManager", "Cache manager initialized successfully")
 	}
 	
 	/**
@@ -77,15 +70,13 @@ class WeatherCacheManager private constructor(private val context: Context) {
 			val cachedData = getCachedData()
 			
 			if (cachedData != null && !isCacheExpired()) {
-				Log.d("WeatherCacheManager", "Using cached weather data")
 				cachedData
 			} else {
-				Log.d("WeatherCacheManager", "Cache expired or missing, fetching fresh data")
 				fetchAndCacheData()
 			}
 		} catch (e: Exception) {
 			Log.e("WeatherCacheManager", "Error getting weather data", e)
-			getCachedData() // Return cached data even if expired in case of error
+			getCachedData()
 		}
 	}
 	
@@ -94,11 +85,10 @@ class WeatherCacheManager private constructor(private val context: Context) {
 	 */
 	suspend fun refreshWeatherData(): WeatherResponse? {
 		return try {
-			Log.d("WeatherCacheManager", "Force refreshing weather data")
 			fetchAndCacheData()
 		} catch (e: Exception) {
 			Log.e("WeatherCacheManager", "Error refreshing weather data", e)
-			getCachedData() // Return cached data as fallback
+			getCachedData()
 		}
 	}
 	
@@ -120,9 +110,7 @@ class WeatherCacheManager private constructor(private val context: Context) {
 		val cacheAge = currentTime - lastUpdate
 		val cacheValidDuration = TimeUnit.MINUTES.toMillis(CACHE_DURATION_MINUTES.toLong())
 		
-		val expired = cacheAge > cacheValidDuration
-		Log.d("WeatherCacheManager", "Cache age: ${cacheAge / 1000}s, expired: $expired")
-		return expired
+		return cacheAge > cacheValidDuration
 	}
 	
 	/**
@@ -134,7 +122,6 @@ class WeatherCacheManager private constructor(private val context: Context) {
 				.remove(KEY_WEATHER_DATA)
 				.remove(KEY_LAST_UPDATE)
 				.apply()
-			Log.d("WeatherCacheManager", "Cache cleared")
 		} catch (e: Exception) {
 			Log.e("WeatherCacheManager", "Error clearing cache", e)
 		}
@@ -162,8 +149,6 @@ class WeatherCacheManager private constructor(private val context: Context) {
 				ExistingPeriodicWorkPolicy.KEEP,
 				refreshWork
 			)
-			
-			Log.d("WeatherCacheManager", "Background refresh scheduled")
 		} catch (e: Exception) {
 			Log.e("WeatherCacheManager", "Failed to schedule background refresh", e)
 		}
@@ -175,7 +160,6 @@ class WeatherCacheManager private constructor(private val context: Context) {
 	fun cancelBackgroundRefresh() {
 		try {
 			workManager.cancelAllWorkByTag(WORK_TAG)
-			Log.d("WeatherCacheManager", "Background refresh cancelled")
 		} catch (e: Exception) {
 			Log.e("WeatherCacheManager", "Failed to cancel background refresh", e)
 		}
@@ -194,7 +178,6 @@ class WeatherCacheManager private constructor(private val context: Context) {
 			}
 		} catch (e: JsonSyntaxException) {
 			Log.e("WeatherCacheManager", "Error parsing cached weather data", e)
-			// Clear corrupted cache
 			clearCache()
 			null
 		}
@@ -210,15 +193,12 @@ class WeatherCacheManager private constructor(private val context: Context) {
 				val result = repository.getWeatherData()
 				
 				result.onSuccess { weatherData ->
-					// Cache the data
 					val jsonData = gson.toJson(weatherData)
 					prefs.edit()
 						.putString(KEY_WEATHER_DATA, jsonData)
 						.putLong(KEY_LAST_UPDATE, System.currentTimeMillis())
 						.apply()
-					Log.d("WeatherCacheManager", "Weather data cached successfully")
 					
-					// Update all widgets after successful cache update
 					WeatherAppWidget.updateAllWidgets(context)
 				}
 				

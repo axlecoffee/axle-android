@@ -6,36 +6,24 @@ import com.google.gson.annotations.SerializedName
  * Weather response from Axle API
  */
 data class WeatherResponse(
-	@SerializedName("location")
-	val location: Location,
-	@SerializedName("timestamp")
-	val timestamp: String,
-	@SerializedName("data")
-	val data: WeatherData,
-	@SerializedName("metadata")
-	val metadata: Metadata
+	@SerializedName("location") val location: Location,
+	@SerializedName("timestamp") val timestamp: String,
+	@SerializedName("data") val data: WeatherData,
+	@SerializedName("metadata") val metadata: Metadata
 )
 
 data class Location(
-	@SerializedName("latitude")
-	val latitude: Double,
-	@SerializedName("longitude")
-	val longitude: Double,
-	@SerializedName("coordinates")
-	val coordinates: String
+	@SerializedName("latitude") val latitude: Double,
+	@SerializedName("longitude") val longitude: Double,
+	@SerializedName("coordinates") val coordinates: String
 )
 
 data class WeatherData(
-	@SerializedName("current")
-	val current: List<CurrentWeather>,
-	@SerializedName("hourly")
-	val hourly: List<HourlyWeather>,
-	@SerializedName("forecast")
-	val forecast: Forecast,
-	@SerializedName("alerts")
-	val alerts: List<String>,
-	@SerializedName("sources")
-	val sources: Sources
+	@SerializedName("current") val current: List<CurrentWeather>,
+	@SerializedName("hourly") val hourly: List<HourlyWeather>,
+	@SerializedName("forecast") val forecast: Forecast,
+	@SerializedName("alerts") val alerts: List<String>,
+	@SerializedName("sources") val sources: Sources
 )
 
 data class CurrentWeather(

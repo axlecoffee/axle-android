@@ -76,17 +76,6 @@ class WeatherWidgetConfigViewModel : ViewModel() {
 			textColor = prefs.getInt("${PREF_COLOR}$appWidgetId", android.graphics.Color.WHITE),
 			customColorHex = prefs.getString("${PREF_CUSTOM_COLOR}$appWidgetId", "#FFFFFF") ?: "#FFFFFF"
 		)
-		
-		Log.d("WeatherWidgetConfig", "Loading existing configuration for widget $appWidgetId:")
-		Log.d("WeatherWidgetConfig", "  Temperature size: ${existingConfig.temperatureTextSize}")
-		Log.d("WeatherWidgetConfig", "  Condition size: ${existingConfig.conditionTextSize}")
-		Log.d("WeatherWidgetConfig", "  Feels like size: ${existingConfig.feelsLikeTextSize}")
-		Log.d("WeatherWidgetConfig", "  Temperature opacity: ${existingConfig.temperatureOpacity}")
-		Log.d("WeatherWidgetConfig", "  Condition opacity: ${existingConfig.conditionOpacity}")
-		Log.d("WeatherWidgetConfig", "  Feels like opacity: ${existingConfig.feelsLikeOpacity}")
-		Log.d("WeatherWidgetConfig", "  Text color: ${existingConfig.textColor}")
-		Log.d("WeatherWidgetConfig", "  Custom color hex: ${existingConfig.customColorHex}")
-		
 		_configuration.value = existingConfig
 		loadWallpaper(context)
 	}

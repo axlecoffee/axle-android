@@ -19,28 +19,18 @@ class WeatherCacheRefreshWorker(
 	override suspend fun doWork(): Result {
 		return withContext(Dispatchers.IO) {
 			try {
-				Log.d("WeatherCacheRefreshWorker", "Starting background cache refresh")
-				
 				val cacheManager = WeatherCacheManager.getInstance(applicationContext)
 				
-				// Check if cache needs refresh
 				if (!cacheManager.isCacheExpired()) {
-					Log.d("WeatherCacheRefreshWorker", "Cache still valid, skipping refresh")
 					return@withContext Result.success()
 				}
 				
-				// Refresh cache
 				val weatherData: WeatherResponse? = cacheManager.refreshWeatherData()
 				
 				if (weatherData != null) {
-					Log.d("WeatherCacheRefreshWorker", "Cache refreshed successfully")
-					
-					// Update all widgets after successful refresh
 					WeatherAppWidget.updateAllWidgets(applicationContext)
-					
 					Result.success()
 				} else {
-					Log.w("WeatherCacheRefreshWorker", "Failed to refresh cache data")
 					Result.retry()
 				}
 			} catch (e: Exception) {

@@ -23,8 +23,6 @@ object CacheMonitor : LifecycleObserver {
 	 */
 	fun initialize(context: Context) {
 		ProcessLifecycleOwner.get().lifecycle.addObserver(this)
-		
-		// Monitor WorkManager status
 		monitorWorkManager(context)
 	}
 	
@@ -35,27 +33,17 @@ object CacheMonitor : LifecycleObserver {
 		monitorScope.launch {
 			try {
 				val workManager = WorkManager.getInstance(context)
-				
-				// Monitor weather cache refresh work
 				val workInfos = workManager.getWorkInfosByTag("weather_cache_refresh")
 				workInfos.observeForever { workInfoList ->
 					for (workInfo in workInfoList) {
 						when (workInfo.state) {
-							WorkInfo.State.RUNNING -> {
-								Log.d("CacheMonitor", "Cache refresh work is running")
-							}
-							WorkInfo.State.SUCCEEDED -> {
-								Log.d("CacheMonitor", "Cache refresh work completed successfully")
-							}
 							WorkInfo.State.FAILED -> {
 								Log.w("CacheMonitor", "Cache refresh work failed")
 							}
 							WorkInfo.State.CANCELLED -> {
 								Log.d("CacheMonitor", "Cache refresh work was cancelled")
 							}
-							else -> {
-								Log.d("CacheMonitor", "Cache refresh work state: ${workInfo.state}")
-							}
+							else -> { /* No logging for normal states */ }
 						}
 					}
 				}
@@ -85,17 +73,10 @@ object CacheMonitor : LifecycleObserver {
 		monitorScope.launch {
 			try {
 				val cacheManager = WeatherCacheManager.getInstance(context)
-				
-				// Check if cache is working
 				val hasData = cacheManager.hasCachedData()
 				val isExpired = cacheManager.isCacheExpired()
 				
-				Log.d("CacheMonitor", "Cache health check:")
-				Log.d("CacheMonitor", "  Has cached data: $hasData")
-				Log.d("CacheMonitor", "  Is expired: $isExpired")
-				
 				if (!hasData || isExpired) {
-					Log.d("CacheMonitor", "Cache needs refresh, triggering update")
 					cacheManager.refreshWeatherData()
 				}
 			} catch (e: Exception) {

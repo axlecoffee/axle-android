@@ -30,9 +30,6 @@ class WeatherAppWidget : AppWidgetProvider() {
 		appWidgetManager: AppWidgetManager,
 		appWidgetIds: IntArray
 	) {
-		Log.d("WeatherAppWidget", "onUpdate called with ${appWidgetIds.size} widgets")
-		
-		// Update each widget
 		for (appWidgetId in appWidgetIds) {
 			updateAppWidget(context, appWidgetManager, appWidgetId)
 		}
@@ -41,10 +38,8 @@ class WeatherAppWidget : AppWidgetProvider() {
 	override fun onReceive(context: Context, intent: Intent) {
 		super.onReceive(context, intent)
 		
-		// Handle standard widget actions
 		when (intent.action) {
 			AppWidgetManager.ACTION_APPWIDGET_UPDATE -> {
-				// Standard widget update
 				val appWidgetManager = AppWidgetManager.getInstance(context)
 				val appWidgetIds = intent.getIntArrayExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS)
 				if (appWidgetIds != null) {
@@ -57,27 +52,21 @@ class WeatherAppWidget : AppWidgetProvider() {
 	override fun onDeleted(context: Context, appWidgetIds: IntArray) {
 		super.onDeleted(context, appWidgetIds)
 		
-		// Clean up configurations for deleted widgets
 		for (appWidgetId in appWidgetIds) {
 			WeatherWidgetConfigViewModel.deletePrefs(context, appWidgetId)
-			Log.d("WeatherAppWidget", "Cleaned up configuration for widget ID: $appWidgetId")
 		}
 	}
 	
 	override fun onEnabled(context: Context) {
 		super.onEnabled(context)
-		Log.d("WeatherAppWidget", "Widget enabled")
 		
-		// Initialize cache manager if not already done
 		val cacheManager = WeatherCacheManager.getInstance(context)
 		cacheManager.initialize()
 	}
 	
 	override fun onDisabled(context: Context) {
 		super.onDisabled(context)
-		Log.d("WeatherAppWidget", "Widget disabled")
 		
-		// Cancel cache manager background refresh
 		val cacheManager = WeatherCacheManager.getInstance(context)
 		cacheManager.cancelBackgroundRefresh()
 	}
@@ -87,28 +76,18 @@ class WeatherAppWidget : AppWidgetProvider() {
 		appWidgetManager: AppWidgetManager,
 		appWidgetId: Int
 	) {
-		Log.d("WeatherAppWidget", "Updating widget $appWidgetId")
-		
-		// Load widget configuration
 		val config = loadConfiguration(context, appWidgetId)
-		
-		// Create RemoteViews
 		val views = RemoteViews(context.packageName, R.layout.weather_widget)
 		
-		// Set up click intents
 		setupClickIntents(context, views, appWidgetId)
-		
-		// Update widget with loading state first
 		updateWidgetViews(views, config, null)
 		appWidgetManager.updateAppWidget(appWidgetId, views)
 		
-		// Load weather data asynchronously
 		widgetScope.launch {
 			try {
 				val weatherData = loadWeatherData(context)
 				updateWidgetViews(views, config, weatherData)
 				appWidgetManager.updateAppWidget(appWidgetId, views)
-				Log.d("WeatherAppWidget", "Widget $appWidgetId updated with weather data")
 			} catch (e: Exception) {
 				Log.e("WeatherAppWidget", "Failed to load weather data for widget $appWidgetId", e)
 				updateWidgetViews(views, config, null)
@@ -123,9 +102,7 @@ class WeatherAppWidget : AppWidgetProvider() {
 			Context.MODE_PRIVATE
 		)
 		
-		Log.d("WeatherAppWidget", "Loading configuration for widget ID: $appWidgetId")
-		
-		val config = WidgetConfiguration(
+		return WidgetConfiguration(
 			appWidgetId = appWidgetId,
 			temperatureTextSize = prefs.getFloat(
 				"${WeatherWidgetConfigViewModel.PREF_TEMP_SIZE}$appWidgetId",
@@ -160,18 +137,6 @@ class WeatherAppWidget : AppWidgetProvider() {
 				"#FFFFFF"
 			) ?: "#FFFFFF"
 		)
-		
-		Log.d("WeatherAppWidget", "Loaded configuration for widget $appWidgetId:")
-		Log.d("WeatherAppWidget", "  Temperature size: ${config.temperatureTextSize}")
-		Log.d("WeatherAppWidget", "  Condition size: ${config.conditionTextSize}")
-		Log.d("WeatherAppWidget", "  Feels like size: ${config.feelsLikeTextSize}")
-		Log.d("WeatherAppWidget", "  Temperature opacity: ${config.temperatureOpacity}")
-		Log.d("WeatherAppWidget", "  Condition opacity: ${config.conditionOpacity}")
-		Log.d("WeatherAppWidget", "  Feels like opacity: ${config.feelsLikeOpacity}")
-		Log.d("WeatherAppWidget", "  Text color: ${config.textColor}")
-		Log.d("WeatherAppWidget", "  Custom color hex: ${config.customColorHex}")
-		
-		return config
 	}
 	
 	private suspend fun loadWeatherData(context: Context): WeatherResponse? {
@@ -185,7 +150,6 @@ class WeatherAppWidget : AppWidgetProvider() {
 	}
 	
 	private fun setupClickIntents(context: Context, views: RemoteViews, appWidgetId: Int) {
-		// Main widget click - open app
 		val mainIntent = Intent(context, MainActivity::class.java)
 		val mainPendingIntent = PendingIntent.getActivity(
 			context,
@@ -205,29 +169,26 @@ class WeatherAppWidget : AppWidgetProvider() {
 			// Update with weather data
 			val currentWeather = weatherData.data.current[0]
 			
-			// Temperature
+			// Temperature 
 			views.setTextViewText(R.id.temperature_text, "${currentWeather.temperature}°")
 			views.setTextViewTextSize(R.id.temperature_text, android.util.TypedValue.COMPLEX_UNIT_SP, config.temperatureTextSize)
 			views.setTextColor(R.id.temperature_text, applyOpacity(config.textColor, config.temperatureOpacity))
 			
-			// Feels like temperature
+			// Feels like AughGHGha
 			views.setTextViewText(R.id.feels_like_text, "${currentWeather.feelsLike}°")
 			views.setTextViewTextSize(R.id.feels_like_text, android.util.TypedValue.COMPLEX_UNIT_SP, config.feelsLikeTextSize)
 			views.setTextColor(R.id.feels_like_text, applyOpacity(config.textColor, config.feelsLikeOpacity))
 			
-			// Weather condition
+			// me when its sunny or smth diek
 			views.setTextViewText(R.id.condition_text, currentWeather.condition)
 			views.setTextViewTextSize(R.id.condition_text, android.util.TypedValue.COMPLEX_UNIT_SP, config.conditionTextSize)
 			views.setTextColor(R.id.condition_text, applyOpacity(config.textColor, config.conditionOpacity))
 			
 		} else {
-			// Loading/error state
 			views.setTextViewText(R.id.temperature_text, "Loading...")
 			views.setTextViewTextSize(R.id.temperature_text, android.util.TypedValue.COMPLEX_UNIT_SP, config.temperatureTextSize)
 			views.setTextColor(R.id.temperature_text, applyOpacity(config.textColor, config.temperatureOpacity))
-			
 			views.setTextViewText(R.id.feels_like_text, "")
-			
 			views.setTextViewText(R.id.condition_text, "Tap to open app")
 			views.setTextViewTextSize(R.id.condition_text, android.util.TypedValue.COMPLEX_UNIT_SP, config.conditionTextSize)
 			views.setTextColor(R.id.condition_text, applyOpacity(config.textColor, config.conditionOpacity))
@@ -263,7 +224,6 @@ class WeatherAppWidget : AppWidgetProvider() {
 				}
 				
 				context.sendBroadcast(intent)
-				Log.d("WeatherAppWidget", "Triggered update for ${appWidgetIds.size} widgets")
 			} catch (e: Exception) {
 				Log.e("WeatherAppWidget", "Failed to update all widgets", e)
 			}

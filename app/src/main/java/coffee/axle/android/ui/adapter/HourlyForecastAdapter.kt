@@ -16,7 +16,7 @@ class HourlyForecastAdapter : RecyclerView.Adapter<HourlyForecastAdapter.ViewHol
 	private var hourlyData = emptyList<HourlyWeather>()
 	
 	fun updateData(data: List<HourlyWeather>) {
-		hourlyData = data.take(12) // Show next 12 hours
+		hourlyData = data.take(12)
 		notifyDataSetChanged()
 	}
 	
