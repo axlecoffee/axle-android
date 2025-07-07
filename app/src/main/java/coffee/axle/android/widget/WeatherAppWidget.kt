@@ -10,19 +10,13 @@ import android.graphics.Color
 import android.os.Build
 import android.util.Log
 import android.widget.RemoteViews
-import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.WorkManager
-import androidx.work.Worker
-import androidx.work.WorkerParameters
 import coffee.axle.android.R
 import coffee.axle.android.data.model.WeatherResponse
-import coffee.axle.android.data.repository.WeatherRepository
 import coffee.axle.android.ui.activity.MainActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
-import java.util.concurrent.TimeUnit
 
 /**
  * Traditional AppWidget implementation for weather display
@@ -42,9 +36,6 @@ class WeatherAppWidget : AppWidgetProvider() {
 		for (appWidgetId in appWidgetIds) {
 			updateAppWidget(context, appWidgetManager, appWidgetId)
 		}
-		
-		// Schedule periodic updates
-		scheduleRefresh(context)
 	}
 	
 	override fun onReceive(context: Context, intent: Intent) {
@@ -76,14 +67,19 @@ class WeatherAppWidget : AppWidgetProvider() {
 	override fun onEnabled(context: Context) {
 		super.onEnabled(context)
 		Log.d("WeatherAppWidget", "Widget enabled")
-		scheduleRefresh(context)
+		
+		// Initialize cache manager if not already done
+		val cacheManager = WeatherCacheManager.getInstance(context)
+		cacheManager.initialize()
 	}
 	
 	override fun onDisabled(context: Context) {
 		super.onDisabled(context)
 		Log.d("WeatherAppWidget", "Widget disabled")
-		// Cancel scheduled refreshes
-		WorkManager.getInstance(context).cancelAllWorkByTag("weather_widget_refresh")
+		
+		// Cancel cache manager background refresh
+		val cacheManager = WeatherCacheManager.getInstance(context)
+		cacheManager.cancelBackgroundRefresh()
 	}
 	
 	private fun updateAppWidget(
@@ -180,7 +176,8 @@ class WeatherAppWidget : AppWidgetProvider() {
 	
 	private suspend fun loadWeatherData(context: Context): WeatherResponse? {
 		return try {
-			WeatherDataCache.getWeatherData(context)
+			val cacheManager = WeatherCacheManager.getInstance(context)
+			cacheManager.getWeatherData()
 		} catch (e: Exception) {
 			Log.e("WeatherAppWidget", "Error loading weather data", e)
 			null
@@ -250,20 +247,6 @@ class WeatherAppWidget : AppWidgetProvider() {
 		}
 	}
 	
-	private fun scheduleRefresh(context: Context) {
-		try {
-			val refreshRequest = OneTimeWorkRequestBuilder<WeatherWidgetRefreshWorker>()
-				.setInitialDelay(30, TimeUnit.MINUTES)
-				.addTag("weather_widget_refresh")
-				.build()
-			
-			WorkManager.getInstance(context).enqueue(refreshRequest)
-			Log.d("WeatherAppWidget", "Scheduled refresh in 30 minutes")
-		} catch (e: Exception) {
-			Log.e("WeatherAppWidget", "Failed to schedule refresh", e)
-		}
-	}
-	
 	companion object {
 		/**
 		 * Update all widgets manually
@@ -284,50 +267,6 @@ class WeatherAppWidget : AppWidgetProvider() {
 			} catch (e: Exception) {
 				Log.e("WeatherAppWidget", "Failed to update all widgets", e)
 			}
-		}
-	}
-}
-
-/**
- * Worker for periodic widget refresh
- */
-class WeatherWidgetRefreshWorker(
-	context: Context,
-	workerParams: WorkerParameters
-) : Worker(context, workerParams) {
-	
-	override fun doWork(): Result {
-		return try {
-			Log.d("WeatherWidgetRefreshWorker", "Performing scheduled refresh")
-			
-			// Force refresh weather data in cache
-			val weatherData = kotlin.runCatching {
-				kotlinx.coroutines.runBlocking {
-					WeatherDataCache.refreshWeatherData(applicationContext)
-				}
-			}.getOrNull()
-			
-			if (weatherData != null) {
-				Log.d("WeatherWidgetRefreshWorker", "Weather data refreshed successfully")
-			} else {
-				Log.w("WeatherWidgetRefreshWorker", "Failed to refresh weather data")
-			}
-			
-			// Update all widgets
-			WeatherAppWidget.updateAllWidgets(applicationContext)
-			
-			// Schedule next refresh
-			val nextRefreshRequest = OneTimeWorkRequestBuilder<WeatherWidgetRefreshWorker>()
-				.setInitialDelay(30, TimeUnit.MINUTES)
-				.addTag("weather_widget_refresh")
-				.build()
-			
-			WorkManager.getInstance(applicationContext).enqueue(nextRefreshRequest)
-			
-			Result.success()
-		} catch (e: Exception) {
-			Log.e("WeatherWidgetRefreshWorker", "Failed to refresh widgets", e)
-			Result.failure()
 		}
 	}
 }
